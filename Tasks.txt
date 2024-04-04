@@ -1,0 +1,18 @@
+------   Añadir   ------
+- Importar la clase Bounds.
+
+
+------   Mejorar   ------
+- Hacer que fighter tenga archivos para determinar hurtboxes.
+- Darle bounds a GameObject y a Sprite.
+- Darle tags a GameObject (Name, Class, ID)
+
+
+------   Notas   ------
+--- Cosas que necesita ---
+- Menú de modos.
+- Menú de opciones.
+- Configuración de controles.
+- Menú de selección de personajes.
+- Menú de selección de escenarios.
+- Re invención de objetos recurrentes del estado "Play"

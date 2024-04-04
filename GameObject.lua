@@ -1,0 +1,137 @@
+local GameStateManager = require("GameStateManager")
+local FPS = require("FPS")
+local Rectangle = require("Rectangle")
+local GameElement = require("GameElement")
+
+
+local mt = {
+	id = 0,
+	destroy = false,
+	visible = true,
+	depth = 0,
+	x = 0,
+	y = 0,
+	scaleX = 1,
+	scaleY = 1,
+	rotation = 0,
+	imageIndex = 1,
+	imageSpeed = 0,
+	imageTime  = 0,
+	imageAlpha = 1,
+	imageBlend = nil,
+	spriteDict = nil,
+	spriteKey  = "nil"
+}
+mt.__index = mt
+setmetatable(mt, GameElement)
+
+
+function mt:baseNew()
+    self.imageBlend = { 1, 1, 1 }
+    self.spriteDict = {}
+end
+
+
+function mt:getSpriteBounds()
+    local sprite = self:getSprite()
+    
+    sprite.x = self.x
+    sprite.y = self.y
+
+    return sprite:getBounds(self.imageIndex)
+end
+
+
+function mt:intersect(param)
+    local r = false
+
+    for _, obj in ipairs(GameStateManager.getCurrent().scene) do
+        if ((obj[param]) and (obj ~= self)) then
+            if (self:getRectangleMask():intersect(obj:getRectangleMask())) then r = true end
+        end
+    end
+
+    return r
+end
+
+
+function mt:getSprite(key)
+	key = key ~= nil and key or self.spriteKey;
+	
+	if (self:hasSprite(key)) then
+		return self.spriteDict[key];
+	else
+		-- return print("No se encontró el sprite: " .. key)
+		return nil
+	end
+end
+
+
+function mt:hasSprite(key)
+	key = key ~= nil and key or self.spriteKey;
+	
+	if (self.spriteDict[key] ~= nil) then
+		return true
+	else
+		return false
+	end
+end
+
+
+function mt:addSprite(key, sprite)
+    if (self.spriteKey == "nil") then
+        self.spriteKey = key
+    end
+
+    self.spriteDict[key] = sprite
+end
+
+
+function mt:spriteDraw()
+    local sprite = self:getSprite()
+
+    local quad
+    if (#sprite.grid > 0) then
+        quad = sprite.grid[self.imageIndex] or sprite.grid[sprite.imageNumber]
+    else
+        quad = love.graphics.newQuad(0, 0, sprite.image:getWidth(), sprite.image:getHeight(), sprite.image)
+    end
+
+    love.graphics.draw(
+    sprite.image,
+    quad,
+    math.floor(self.x+0.5),
+    math.floor(self.y+0.5),
+    self.rotation,
+    self.scaleX,
+    self.scaleY,
+    sprite.imageOriginX,
+    sprite.imageOriginY)
+end
+
+
+function mt:baseUpdate()
+    if not (self:hasSprite() and self:getSprite().imageNumber > 1 and self.imageSpeed > 0) then return end
+
+    self.imageTime = self.imageTime + FPS.min_dt
+
+    if (self.imageTime > self.imageSpeed/10) then
+        self.imageTime = 0
+
+        self.imageIndex = self.imageIndex + 1
+        
+        if (self.imageIndex > self:getSprite().imageNumber) then self.imageIndex = 1 end
+    end
+end
+
+
+function mt:baseDraw()
+    if not ((self.visible) and (self.spriteKey ~= "nil")) then return end
+
+    love.graphics.setColor(self.imageBlend[1], self.imageBlend[2], self.imageBlend[3], self.imageAlpha)
+    self:spriteDraw()
+    love.graphics.setColor(1, 1, 1)
+end
+
+
+return mt
