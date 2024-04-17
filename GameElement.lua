@@ -1,6 +1,10 @@
 local mt = {
 id = 0,
-depth = 0
+class = "",
+name = "",
+type = "",
+depth = 0,
+visible = true
 }
 mt.__index = mt
 

@@ -6,7 +6,7 @@ function mt:print(text, x, y)
     y = y or 0
 
     --  Dibujado de carácteres  --
-    love.graphics.setColor(self.imageBlend[1], self.imageBlend[1], self.imageBlend[3], self.imageAlpha)
+    love.graphics.setColor(self.imageBlend[1], self.imageBlend[2], self.imageBlend[3], self.imageAlpha)
     for i = 1, #text do
         local char = text:sub(i, i)
 

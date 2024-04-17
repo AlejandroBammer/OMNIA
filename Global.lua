@@ -15,10 +15,12 @@ local Global = {
     gameMode = "nil"
 }
 
+
 -- Inteligencia de peleadores.
 for i = 1, Global.fighterNum, 1 do
     Global.fightersIntelType[i] = "cpu"
 end
+
 
 -- Reproductor de música.
 function Global.setMusic(fileName)
@@ -30,6 +32,7 @@ function Global.setMusic(fileName)
     Global.music = love.audio.newSource("music/" .. fileName, "stream")
 end
 
+
 -- Gestión de stocks de los peledores.
 function Global.setFightersStocks(amount)
     for i = 1, Global.fighterNum, 1 do
@@ -37,6 +40,7 @@ function Global.setFightersStocks(amount)
     end
 end
 Global.setFightersStocks(-1)
+
 
 -- Peleadores.
 function Global.resetFighters()
@@ -46,10 +50,12 @@ function Global.resetFighters()
 end
 Global.resetFighters()
 
+
 -- Puntuación de los peleadores.
 for i = 1, Global.fighterNum, 1 do
     table.insert(Global.fightersScores, {})
 end
+
 
 -- Reincia la puntuación.
 function Global.resetScore()
@@ -63,12 +69,14 @@ function Global.resetScore()
 end
 Global.resetScore()
 
+
 -- Añadir puntos.
 function Global.scoreAdd(ID, scoreType, score)
     score = score or 1
 
     Global.fightersScores[ID][scoreType] = Global.fightersScores[ID][scoreType] + score
 end
+
 
 -- Reincia todo.
 function Global.resetData()

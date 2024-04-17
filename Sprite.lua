@@ -24,6 +24,8 @@ end
 
 
 function mt:draw()
+	if (not self.visible) then return end
+
 	love.graphics.setColor(self.imageBlend[1], self.imageBlend[2], self.imageBlend[3], self.imageAlpha)
     love.graphics.draw(
     self.image,
@@ -38,22 +40,6 @@ function mt:draw()
 end
 
 
-function mt:getBounds(index)
-	local bounds
-	
-	if (index == nil) then
-		bounds = self.bounds[self.imageIndex]
-	else
-		bounds = self.bounds[index]
-	end
-
-	bounds:setX(bounds.oX + self.x - self.imageOriginX)
-	bounds:setY(bounds.oY + self.y - self.imageOriginY)
-	
-	return bounds
-end
-
-
 function mt:setBounds(bounds, index)
 	bounds.oX = bounds:getX()
 	bounds.oY = bounds:getY()
@@ -61,12 +47,23 @@ function mt:setBounds(bounds, index)
 	bounds:setX(bounds.oX + self.x - self.imageOriginX)
 	bounds:setY(bounds.oY + self.y - self.imageOriginY)
 	
+	self.bounds[index or 1] = bounds
+end
+
+
+function mt:getBounds(index)
+	local bounds
 	
 	if (index == nil) then
-		self.bounds[1] = bounds
+		bounds = self.bounds[1]
 	else
-		self.bounds[index] = bounds
+		bounds = self.bounds[index] ~= nil and self.bounds[index] or self.bounds[1]
 	end
+
+	bounds:setX(bounds.oX + self.x - self.imageOriginX)
+	bounds:setY(bounds.oY + self.y - self.imageOriginY)
+	
+	return bounds
 end
 
 
@@ -107,6 +104,8 @@ function mt:createGrid(imageNumber, imagesPerRow, width, height, horizontalCellO
 
     --  Redefinición del método draw(Agrega el argumento grid)  --
     self.draw = function()
+		if (not self.visible) then return end
+    
 		love.graphics.setColor(self.imageBlend[1], self.imageBlend[2], self.imageBlend[3], self.imageAlpha)
         love.graphics.draw(
         self.image,
@@ -143,7 +142,7 @@ return {
 			imageBlend = { 1, 1, 1 },
 			width,
 			height,
-			bounds = {},-- require("List").new(),
+			bounds = {},
 			imageTime = 0
         }
         setmetatable(nt, mt)

@@ -1,11 +1,14 @@
 local GameStateManager = require("GameStateManager")
 local FPS = require("FPS")
-local Rectangle = require("Rectangle")
+local Bounds = require("Bounds")
 local GameElement = require("GameElement")
 
 
 local mt = {
 	id = 0,
+	class = "",
+	name = "",
+	type = "",
 	destroy = false,
 	visible = true,
 	depth = 0,
@@ -20,7 +23,8 @@ local mt = {
 	imageAlpha = 1,
 	imageBlend = nil,
 	spriteDict = nil,
-	spriteKey  = "nil"
+	spriteKey  = "nil",
+	_bounds = Bounds.new()
 }
 mt.__index = mt
 setmetatable(mt, GameElement)
@@ -29,6 +33,31 @@ setmetatable(mt, GameElement)
 function mt:baseNew()
     self.imageBlend = { 1, 1, 1 }
     self.spriteDict = {}
+end
+
+
+function mt:setBounds(bounds, index)
+	local imageOriginX = self:getSprite().imageOriginX or 0
+	local imageOriginY = self:getSprite().imageOriginY or 0
+
+	bounds.oX = bounds:getX()
+	bounds.oY = bounds:getY()
+
+	bounds:setX(bounds.oX + self.x - imageOriginX)
+	bounds:setY(bounds.oY + self.y - imageOriginY)
+	
+	self._bounds = bounds
+end
+
+
+function mt:getBounds(index)
+	local imageOriginX = self:getSprite().imageOriginX or 0
+	local imageOriginY = self:getSprite().imageOriginY or 0
+
+	self._bounds:setX((self._bounds.oX or 0) + self.x - imageOriginX)
+	self._bounds:setY((self._bounds.oY or 0) + self.y - imageOriginY)
+	
+	return self._bounds
 end
 
 

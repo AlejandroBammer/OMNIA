@@ -147,7 +147,7 @@ return
 		}
 		setmetatable(nt, mt)
 		
-		nt:set(x, y, width, height)
+		nt:set(x or 0, y or 0, width or 0, height or 0)
 		
 		nt._areaX = nt._x
 		nt._areaY = nt._y

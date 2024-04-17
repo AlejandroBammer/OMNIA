@@ -37,7 +37,11 @@ end
 
 
 function Input.set(player, input, key)
-    Input.controls[player][input] = key
+    if (input == "pause" or input == "return") then
+		Input[input .. "Input"] = key
+    else
+		Input.controls[player][input] = key
+    end
 end
 
 function Input.get(player, input)

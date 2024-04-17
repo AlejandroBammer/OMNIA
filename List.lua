@@ -17,14 +17,22 @@ function mt:sort(func)
 end
 
 
-function mt:find(e)
+function mt:find(v, a)
     local list = {}
-
-    for _, item in ipairs(self.items) do
-        if (item[e]) then
-            table.insert(list, item)
-        end
-    end
+	
+	if (a == nil) then
+		for _, item in ipairs(self.items) do
+			if (item[v]) then
+				table.insert(list, item)
+			end
+		end
+	else
+		for _, item in ipairs(self.items) do
+			if (item[v] == a) then
+				table.insert(list, item)
+			end
+		end
+	end
 
     return list
 end

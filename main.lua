@@ -57,13 +57,13 @@ function love.keypressed(key, scancode, isrepeat)
     if (key == "f1") then
         -- love.event.quit("restart")
         Global.resetData()
-        GameStateManager.setCurrent("Test")
+        GameStateManager.setCurrent("Menu")
     end
 
     -- Salta al menú.
     if (key == "f2") then
         Global.resetData()
-        GameStateManager.setCurrent("Test")
+        GameStateManager.setCurrent("Menu")
     end
 
     -- Perzonalizado.

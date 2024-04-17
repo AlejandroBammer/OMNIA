@@ -1,7 +1,10 @@
 local List = require("List")
 local Global = require("Global")
 
-local mt = {}
+local mt =
+{
+	name = ""
+}
 mt.__index = mt
 
 
