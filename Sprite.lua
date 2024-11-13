@@ -126,6 +126,7 @@ return {
     new = function(image, x, y, imageRotation, imageScaleX, imageScaleY, imageOriginX, imageOriginY)
         local nt = {
 			id = 0,
+			class = "Sprite",
 			depth = 0,
 			image = type(image) ~= "string" and image or love.graphics.newImage(image),
 			x = x or 0,

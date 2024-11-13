@@ -6,12 +6,11 @@ local GameElement = require("GameElement")
 
 local mt = {
 	id = 0,
-	class = "",
-	name = "",
+	class = "GameObject",
 	type = "",
-	destroy = false,
-	visible = true,
+	name = "",
 	depth = 0,
+	visible = true,
 	x = 0,
 	y = 0,
 	scaleX = 1,
@@ -71,16 +70,29 @@ function mt:getSpriteBounds()
 end
 
 
-function mt:intersect(param)
+function mt:intersects(tag, value)
     local r = false
 
     for _, obj in ipairs(GameStateManager.getCurrent().scene) do
-        if ((obj[param]) and (obj ~= self)) then
-            if (self:getRectangleMask():intersect(obj:getRectangleMask())) then r = true end
+        if ((obj[tag] == value) and (obj ~= self)) then
+            if (self:getBounds():intersects(obj:getBounds())) then r = true end
         end
     end
 
     return r
+end
+
+
+function mt:intersections()
+	local list = {}
+
+	for _, obj in ipairs(GameStateManager.getCurrent().scene) do
+        if ((obj[tag] == value) and (obj ~= self)) then
+            if (self:getBounds():intersects(obj:getBounds())) then table.insert(list, obj) end
+        end
+    end
+    
+    return list
 end
 
 
@@ -153,6 +165,8 @@ function mt:baseUpdate()
     end
 end
 
+function mt:update() self:baseUpdate() end
+
 
 function mt:baseDraw()
     if not ((self.visible) and (self.spriteKey ~= "nil")) then return end
@@ -161,6 +175,8 @@ function mt:baseDraw()
     self:spriteDraw()
     love.graphics.setColor(1, 1, 1)
 end
+
+function mt:draw() self:baseDraw() end
 
 
 return mt

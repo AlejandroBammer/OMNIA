@@ -30,7 +30,7 @@ function love.load()
     
 
     -- Primer estado.
-    GameStateManager.setCurrent("Menu")
+    GameStateManager.setCurrent("Test")
 end
 
 function love.update(dt)
@@ -57,16 +57,16 @@ function love.keypressed(key, scancode, isrepeat)
     if (key == "f1") then
         -- love.event.quit("restart")
         Global.resetData()
-        GameStateManager.setCurrent("Menu")
+        GameStateManager.setCurrent("Test")
     end
 
     -- Salta al menú.
     if (key == "f2") then
         Global.resetData()
-        GameStateManager.setCurrent("Menu")
+        GameStateManager.setCurrent("Test")
     end
 
-    -- Perzonalizado.
+    -- Gameplay.
     if (key == "f3") then
         
     end
