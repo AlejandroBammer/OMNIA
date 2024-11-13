@@ -11,11 +11,23 @@ local Input = {
         "guard",
         "jump"
     },
+	inputPress = {},
     controls = {},
     pauseInput = "unknown",
     returnInput = "unknown",
     controlsFile = love.filesystem.newFile("controls.txt")
 }
+
+
+function Input.load()
+	for i = 1, #Input.inputTypes, 1 do
+		for j = 1, Global.FIGHTER_MAXNUM, 1 do
+			local iType = Input.inputTypes[i]
+		
+			Input.inputPress[i] = { [iType] = false }
+		end
+	end
+end
 
 
 function Input.pauseSet(key)
@@ -48,8 +60,24 @@ function Input.get(player, input)
     return love.keyboard.isScancodeDown(Input.controls[player][input])
 end
 
+function Input.getPress(player, input)
+	local v = false
 
-for i = 1, Global.fighterNum, 1 do
+	local iGet = Input.get(player, input)
+	
+	if (iGet and not Input.inputPress[player][input]) then
+		v = true
+	else
+		v = false
+	end
+	
+	Input.inputPress[player][input] = iGet
+	
+	return v
+end
+
+
+for i = 1, Global.FIGHTER_MAXNUM, 1 do
     table.insert(Input.controls, {})
 
     for j = 1, #Input.inputTypes, 1 do
@@ -86,7 +114,7 @@ function Input.loadControls()
     Input.controlsFile:open("r")
 
     local lines = Input.controlsFile:lines()
-    local linesN = #Input.inputTypes*Global.fighterNum+Global.fighterNum + 4
+    local linesN = #Input.inputTypes*Global.FIGHTER_MAXNUM+Global.FIGHTER_MAXNUM + 4
 
     local p = 0
     for i = 1, linesN, 1 do
@@ -144,11 +172,10 @@ function Input.initialize()
     }
 
     for i = 1, #Input.inputTypes, 1 do
-        Input.set(1, Input.inputTypes[i], player1[i])
-    end
-
-    for i = 1, #Input.inputTypes, 1 do
-        Input.set(2, Input.inputTypes[i], player2[i])
+		local iType = Input.inputTypes[i]
+    
+        Input.set(1, iType, player1[i])
+        Input.set(2, iType, player2[i])
     end
 
     Input.pauseSet("return")

@@ -20,11 +20,6 @@ setmetatable(mt, GameState)
 
 function mt:update()
 	self:baseUpdate()
-	
-	if (Input.get(1, "down")) then self.btn.y = self.btn.y + 3 end
-	if (Input.get(1, "right")) then self.btn.x = self.btn.x + 3 end
-	if (Input.get(1, "up")) then self.btn.y = self.btn.y - 3 end
-	if (Input.get(1, "left")) then self.btn.x = self.btn.x - 3 end
 end
 
 
@@ -80,14 +75,13 @@ return
 		btnSprite:setBounds(Bounds.new(15, 0, 196, 32))
 		
 		
-		--- Botones ---
+		---  Botones  ---
 		-- Versus.
 		local button = Button.new(btnSprite); button.x = 15; button.y = 80; button.font = unknownFont2
 		button.text = "VERSUS"
 		button.textYOffset = -2
-		nt.btn = button
 		
-		function button:selectAction() GameStateManager.setCurrent("FighterSelect") end
+		function button:selectAction() GameStateManager.push("FighterSelect") end
 		
 		nt.scene:add(button)
 		
@@ -96,7 +90,7 @@ return
 		button.text = "TRAINING"
 		button.textYOffset = -2
 		
-		function button:selectAction() GameStateManager.setCurrent("FighterSelect") end
+		function button:selectAction() GameStateManager.push("FighterSelect") end
 		
 		nt.scene:add(button)
 		
@@ -105,7 +99,7 @@ return
 		button.text = "CONTROLES"
 		button.textYOffset = -2
 		
-		function button:selectAction() GameStateManager.setCurrent("ControlConfig") end
+		function button:selectAction() GameStateManager.push("ControlConfig") end
 		
 		nt.scene:add(button)
 		

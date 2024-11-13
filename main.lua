@@ -21,22 +21,24 @@ function love.load()
 
     -- Inputs.
     local controlsFileExists = love.filesystem.getInfo("controls.txt")
-
+    
     if not (controlsFileExists) then
         Input.initialize()
     else
         Input.loadControls()
     end
     
+    Input.load()
+    
 
-    -- Primer estado.
-    GameStateManager.setCurrent("Menu")
+    -- Manejo de estados.
+    GameStateManager.setCapacity(2)
+    GameStateManager.push("Menu")
 end
 
 function love.update(dt)
     FPS.update()
-    GameStateManager.getCurrent():update()
-    GameStateManager.update()
+    GameStateManager.peek():update()
 end
 
 function love.resize()
@@ -44,10 +46,6 @@ function love.resize()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    if (GameStateManager.getCurrent().keypressed) then
-        GameStateManager.getCurrent():keypressed(key, scancode, isrepeat)
-    end
-
     if (key == "f4") then
         love.window.setFullscreen(not love.window.getFullscreen())
         Viewport.resize()
@@ -56,17 +54,17 @@ function love.keypressed(key, scancode, isrepeat)
     -- Reinicia el juego.
     if (key == "f1") then
         -- love.event.quit("restart")
-        Global.resetData()
-        GameStateManager.setCurrent("Menu")
+        -- Global.resetData()
+        GameStateManager.push("Menu")
     end
 
     -- Salta al menú.
     if (key == "f2") then
-        Global.resetData()
-        GameStateManager.setCurrent("Menu")
+        -- Global.resetData()
+        GameStateManager.push("Play", "TestStage")
     end
 
-    -- Perzonalizado.
+    -- Gameplay.
     if (key == "f3") then
         
     end
@@ -83,7 +81,7 @@ function love.draw()
 
     Viewport.drawInit()
 
-    GameStateManager.getCurrent():draw()
+    GameStateManager.peek():draw()
 	
 	if (Global.debug) then
 		love.graphics.print("FPS: " .. love.timer.getFPS())

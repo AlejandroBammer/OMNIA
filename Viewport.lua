@@ -1,4 +1,5 @@
 local Viewport = {}
+Viewport.canvas = nil
 Viewport.x = 0
 Viewport.y = 0
 Viewport.width  = 0
@@ -7,7 +8,6 @@ Viewport.scaleX = 0
 Viewport.scaleY = 0
 Viewport.backgroundColor = { 0, 0, 0, 1 }
 
-local canvas
 
 function Viewport.set(width, height, scaleX, scaleY)
     Viewport.width  = width
@@ -16,8 +16,13 @@ function Viewport.set(width, height, scaleX, scaleY)
     Viewport.scaleY = scaleY
     Viewport.resize()
     
-    canvas = love.graphics.newCanvas(Viewport.width, Viewport.height)
-    canvas:setFilter("nearest", "nearest")
+    if (Viewport.canvas ~= nil) then
+		Viewport.canvas:release();
+		Viewport.canvas = nil
+    end
+    
+    Viewport.canvas = love.graphics.newCanvas(Viewport.width, Viewport.height)
+    Viewport.canvas:setFilter("nearest", "nearest")
 end
 
 function Viewport.setBackgroundColor(r, g, b, a)
@@ -53,7 +58,7 @@ function Viewport.resize()
 end
 
 function Viewport.drawInit()
-    love.graphics.setCanvas(canvas)
+    love.graphics.setCanvas(Viewport.canvas)
     love.graphics.clear(
         Viewport.backgroundColor[1],
         Viewport.backgroundColor[2],
@@ -63,7 +68,7 @@ end
 
 function Viewport.drawEnd()
     love.graphics.setCanvas()
-    love.graphics.draw(canvas, Viewport.x, Viewport.y, 0, Viewport.scaleX, Viewport.scaleY)
+    love.graphics.draw(Viewport.canvas, Viewport.x, Viewport.y, 0, Viewport.scaleX, Viewport.scaleY)
 end
 
 return Viewport

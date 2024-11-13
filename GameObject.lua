@@ -1,22 +1,21 @@
 local GameStateManager = require("GameStateManager")
 local FPS = require("FPS")
-local Bounds = require("Bounds")
 local GameElement = require("GameElement")
+local Rectangle = require("Rectangle")
 
 
 local mt = {
-	id = 0,
-	class = "",
-	name = "",
+	class = "gameObject",
 	type = "",
-	destroy = false,
-	visible = true,
+	name = "",
+	tags = nil,
 	depth = 0,
+	visible = true,
 	x = 0,
 	y = 0,
+	rotation = 0,
 	scaleX = 1,
 	scaleY = 1,
-	rotation = 0,
 	imageIndex = 1,
 	imageSpeed = 0,
 	imageTime  = 0,
@@ -24,44 +23,40 @@ local mt = {
 	imageBlend = nil,
 	spriteDict = nil,
 	spriteKey  = "nil",
-	_bounds = Bounds.new()
+	ECB = nil,
+	ECBOffsetX = 0,
+	ECBOffsetY = 0,
+	ECBColor = nil,
+	collisionTypes = nil
 }
 mt.__index = mt
 setmetatable(mt, GameElement)
 
 
-function mt:baseNew()
-    self.imageBlend = { 1, 1, 1 }
-    self.spriteDict = {}
-end
+function mt:setTag(key, value) self.tags[key] = value end
+
+function mt:getTag(key) return self.tags[key] end
 
 
-function mt:setBounds(bounds, index)
-	local imageOriginX = self:getSprite().imageOriginX or 0
-	local imageOriginY = self:getSprite().imageOriginY or 0
-
-	bounds.oX = bounds:getX()
-	bounds.oY = bounds:getY()
-
-	bounds:setX(bounds.oX + self.x - imageOriginX)
-	bounds:setY(bounds.oY + self.y - imageOriginY)
+function mt:setECB(offsetX, offsetY, width, height)
+	self.ECBOffsetX = offsetX
+	self.ECBOffsetY = offsetY
 	
-	self._bounds = bounds
+	self.ECB = Rectangle.new(offsetX, offsetY, width, height)
 end
 
 
-function mt:getBounds(index)
-	local imageOriginX = self:getSprite().imageOriginX or 0
-	local imageOriginY = self:getSprite().imageOriginY or 0
-
-	self._bounds:setX((self._bounds.oX or 0) + self.x - imageOriginX)
-	self._bounds:setY((self._bounds.oY or 0) + self.y - imageOriginY)
-	
-	return self._bounds
+function mt:getECB()
+	return Rectangle.new(self.x - self.ECBOffsetX, self.y - self.ECBOffsetY, self.ECB.width, self.ECB.height)
 end
 
 
-function mt:getSpriteBounds()
+function mt:collisionTypesReset()
+	self.collisionTypes = { right = false, left = false, bottom = false, false, top = false }
+end
+
+
+function mt:getBounds()
     local sprite = self:getSprite()
     
     sprite.x = self.x
@@ -71,16 +66,60 @@ function mt:getSpriteBounds()
 end
 
 
-function mt:intersect(param)
-    local r = false
+function mt:_getCollisions()
+	local list = {}
 
-    for _, obj in ipairs(GameStateManager.getCurrent().scene) do
-        if ((obj[param]) and (obj ~= self)) then
-            if (self:getRectangleMask():intersect(obj:getRectangleMask())) then r = true end
-        end
-    end
+	for _, col in ipairs(self.scene.collision.items) do
+		if (self:getECB():intersects(col.area)) then
+			table.insert(list, col)
+		end
+	end
+	
+	return list
+end
 
-    return r
+
+function mt:move(movement)
+	local ECB
+
+	self.x = self.x + movement.x
+	ECB = self:getECB()
+	
+	for _, col in ipairs(self:_getCollisions()) do
+		local colArea = col.area
+		
+		if (ECB:intersects(colArea)) then
+			if (movement.x > 0) then
+				self.x = (colArea:getLeft() - ECB.width) + self.ECBOffsetX
+				self.collisionTypes.right = true
+			end
+			
+			if (movement.x < 0) then
+				self.x = (colArea:getRight()) + self.ECBOffsetX
+				self.collisionTypes.left = true
+			end
+		end
+	end
+	
+	
+	self.y = self.y + movement.y
+	ECB = self:getECB()
+	
+	for _, col in ipairs(self:_getCollisions()) do
+		local colArea = col.area
+		
+		if (ECB:intersects(colArea)) then
+			if (self.movement.y > 0) then
+				self.y = (colArea:getTop() - ECB.height) + self.ECBOffsetY
+				self.collisionTypes.bottom = true
+			end
+			
+			if (self.movement.y < 0) then
+				self.y = (colArea:getBottom()) + self.ECBOffsetY
+				self.collisionTypes.top = true
+			end
+		end
+	end
 end
 
 
@@ -90,8 +129,7 @@ function mt:getSprite(key)
 	if (self:hasSprite(key)) then
 		return self.spriteDict[key];
 	else
-		-- return print("No se encontró el sprite: " .. key)
-		return nil
+		return nil -- En su lugar devolver un sprite génerico.
 	end
 end
 
@@ -116,6 +154,15 @@ function mt:addSprite(key, sprite)
 end
 
 
+function mt:drawECB()
+	local r = self:getECB()
+
+	love.graphics.setColor(self.ECBColor[1], self.ECBColor[2], self.ECBColor[3], self.ECBColor[4])
+	love.graphics.rectangle("fill", r.x, r.y, r.width, r.height)
+	love.graphics.setColor(1, 1, 1, 1)
+end
+
+
 function mt:spriteDraw()
     local sprite = self:getSprite()
 
@@ -134,12 +181,14 @@ function mt:spriteDraw()
     self.rotation,
     self.scaleX,
     self.scaleY,
-    sprite.imageOriginX,
-    sprite.imageOriginY)
+    sprite.originX,
+    sprite.originY)
 end
 
 
 function mt:baseUpdate()
+	self:collisionTypesReset()
+
     if not (self:hasSprite() and self:getSprite().imageNumber > 1 and self.imageSpeed > 0) then return end
 
     self.imageTime = self.imageTime + FPS.min_dt
@@ -153,6 +202,8 @@ function mt:baseUpdate()
     end
 end
 
+function mt:update() self:baseUpdate() end
+
 
 function mt:baseDraw()
     if not ((self.visible) and (self.spriteKey ~= "nil")) then return end
@@ -160,6 +211,30 @@ function mt:baseDraw()
     love.graphics.setColor(self.imageBlend[1], self.imageBlend[2], self.imageBlend[3], self.imageAlpha)
     self:spriteDraw()
     love.graphics.setColor(1, 1, 1)
+end
+
+function mt:draw() self:baseDraw() end
+
+
+function mt:baseNew()
+	self.tags = {}
+	self.ECB = Rectangle.new()
+	self.ECBColor = { 0, 0, 1, 0.5 }
+    self.imageBlend = { 1, 1, 1 }
+    self.spriteDict = {}
+    self:collisionTypesReset()
+end
+
+
+function mt.new(x, y)
+	local nt = {
+		x = x or 0,
+		y = y or 0
+	}
+	setmetatable(nt, mt)
+	nt:baseNew()
+
+	return nt
 end
 
 

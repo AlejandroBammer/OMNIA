@@ -135,7 +135,7 @@ return
 		
 		function btnBack:selectAction()
 			Input.saveControls()
-            GameStateManager.setCurrent("Menu")
+            GameStateManager.pop()
 		end
 		
 		

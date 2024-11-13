@@ -6,12 +6,19 @@ function mt:print(text, x, y)
     y = y or 0
 
     --  Dibujado de carácteres  --
-    love.graphics.setColor(self.imageBlend[1], self.imageBlend[2], self.imageBlend[3], self.imageAlpha)
+    love.graphics.setColor(self.imageBlend[1], self.imageBlend[1], self.imageBlend[3], self.imageAlpha)
     for i = 1, #text do
         local char = text:sub(i, i)
 
         local charGrid = self.charGrid[char] ~= nil and self.charGrid[char] or self.charGrid[" "]
-        love.graphics.draw(self.imageFont, charGrid, math.floor(x + self:getTextWidth(text, i-1)+0.5), math.floor(y+0.5))
+        love.graphics.draw(
+        self.imageFont,
+        charGrid,
+        math.floor(x + (self:getTextWidth(text, i-1)*self.scaleX)+0.5),
+        math.floor(y+0.5),
+        0,
+        self.scaleX,
+        self.scaleY)
     end
     love.graphics.setColor(1, 1, 1, 1)
 end
@@ -32,6 +39,8 @@ return {
         local nt = {
             imageBlend = { 1, 1, 1 },
             imageAlpha = 1,
+            scaleX = 1;
+            scaleY = 1;
             spacing = spacing or 0,
             characters = characters,
             charGrid = {},

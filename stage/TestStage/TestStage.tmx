@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="480" height="270" tilewidth="1" tileheight="1" infinite="0" nextlayerid="7" nextobjectid="23">
+ <editorsettings>
+  <export target="TestStage.lua" format="lua"/>
+ </editorsettings>
+ <tileset firstgid="1" source="sprites.tsx"/>
+ <objectgroup draworder="index" id="3" name="sprites" class="Sprite">
+  <object id="11" gid="8" x="0" y="272" width="484" height="95"/>
+  <object id="12" name="Weabo" gid="5" x="59" y="200" width="32" height="32"/>
+  <object id="13" name="Spoilerman" gid="6" x="218" y="200" width="29" height="61"/>
+  <object id="14" name="Mariku" gid="7" x="355" y="204" width="32" height="67"/>
+ </objectgroup>
+ <objectgroup draworder="index" id="5" name="game objects" class="GameObject">
+  <object id="19" name="UnObjeto" type="Palayer" x="150" y="200">
+   <properties>
+    <property name="inputRespond" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="22" name="OtroObjeto" type="Palayer" x="300" y="200">
+   <properties>
+    <property name="inputRespond" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup draworder="index" id="6" name="collisions" class="Collision">
+  <object id="20" x="1" y="200" width="480" height="65"/>
+ </objectgroup>
+</map>

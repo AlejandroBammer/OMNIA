@@ -2,7 +2,7 @@ local GameObject = require("GameObject")
 local Sprite = require("Sprite")
 local Bounds = require("Bounds")
 local Mouse = require("Mouse")
--- local Spritefont = require("Spritefont")
+
 
 
 local mt = {}
@@ -30,7 +30,7 @@ function mt:update()
 	if (self.enableMouse) then
 		local bMouse = Bounds.new(Mouse.getX(), Mouse.getY(), 1, 1)
 		
-		if (bMouse:intersects(self:getSpriteBounds())) then
+		if (bMouse:intersects(self:getBounds())) then
 			if (self:canImageChange()) then self.imageIndex = 2 end
 		
 			if (Mouse.getLeftClick()) then
@@ -46,8 +46,6 @@ end
 function mt:draw()
 	self:baseDraw()
 	
-	-- self:getSpriteBounds():draw()
-	
 	if (self.font ~= nil and self.text ~= "") then
 		local txtCenterX = self.font:getTextWidth(self.text)/2
 		self.font:print(self.text, (self.x + self.centerX) - txtCenterX + self.textXOffset, (self.y + self.centerY) - (self.font.height/2) + self.textYOffset)
@@ -59,7 +57,7 @@ return
 {
 	new = function(sprite, x, y)
 		local nt = {
-			class = "button",
+			type = "button",
 			enableMouse = true,
 			imageChange = true,
 			x = x or 0,

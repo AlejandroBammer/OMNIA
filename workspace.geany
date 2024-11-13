@@ -19,7 +19,7 @@ indent_mode=2
 
 [project]
 name=GBA
-base_path=/home/alejandrobammer/Documentos/GameDev/Love2D/OMNIA
+base_path=/home/alejandro/Documentos/GameDev/Love2D/OMNIA
 description=
 file_patterns=
 
@@ -29,18 +29,20 @@ long_line_column=128
 
 [files]
 current_page=1
-FILE_NAME_0=380;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandrobammer%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2Fmain.lua;0;4
-FILE_NAME_1=4544;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandrobammer%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2Fgame%20states%2FFighterSelectState.lua;0;4
-FILE_NAME_2=1257;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandrobammer%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2Fgame%20objects%2FButton.lua;0;4
-FILE_NAME_3=555;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandrobammer%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2Fgame%20objects%2FPlayerPointer.lua;0;4
-FILE_NAME_4=181;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandrobammer%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2FGameObject.lua;0;4
-FILE_NAME_5=0;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandrobammer%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2FGameElement.lua;0;4
+FILE_NAME_0=248;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandro%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2Fmain.lua;0;4
+FILE_NAME_1=1384;Lua;0;EUTF-8;1;1;0;%2Fhome%2Falejandro%2FDocumentos%2FGameDev%2FLove2D%2FOMNIA%2Fgame%20states%2FFighterSelectState.lua;0;4
 
 [VTE]
-last_dir=/home/alejandrobammer
+last_dir=/home/alejandro
 
 [build-menu]
 LuaFT_00_LB=Run
 LuaFT_00_CM=love "%p"
 LuaFT_00_WD=
 filetypes=Lua;
+EX_00_LB=_Ejecutar
+EX_00_CM=love "%p"
+EX_00_WD=
+NF_00_LB=Open Tiled
+NF_00_CM=Tiled
+NF_00_WD=

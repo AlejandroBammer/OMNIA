@@ -1,61 +1,48 @@
 local List = require("List")
+local Scene = require("Scene")
 local Global = require("Global")
 
-local mt =
-{
+local PRECISION = 0.0001
+
+
+local mt = {
 	name = ""
 }
 mt.__index = mt
 
 
-local function toDecimal(n)
-	local z = "0.000000000000000"
-	
-	return tonumber(string.sub(z, 1, string.len(z) - string.len(n)) .. n)
-end
-
-
 local function sortByDepth(a, b)
-	aDepth = a.depth + toDecimal(a.id)
-	bDepth = b.depth + toDecimal(b.id)
+	aDepth = a.depth + a.dId * PRECISION
+	bDepth = b.depth + b.dId * PRECISION
 	
 	return aDepth < bDepth
 end
 
 
 function mt:baseNew()
-    self.scene = List.new()
-    
-    self.scene.onAdd = function(object)
-		object.id = Global.idCounter
-		Global.idCounter = Global.idCounter + 1
-    end
+    self.scene = Scene.new()
+end
+
+
+function mt:enter()
 end
 
 
 function mt:baseUpdate()
-    for _, obj in ipairs(self.scene.items) do
-        if (obj.update) then
-            obj:update()
-        end
-    end
-
-    for obj = #self.scene.items, 1, -1 do
-        if (self.scene.items[obj].destroy) then
-            self.scene:remove(obj)
-        end
-    end
+	self.scene:update()
 end
+
+function mt:update() self:baseUpdate() end
 
 
 function mt:baseDraw()
-	self.scene:sort(sortByDepth)
+	self.scene:draw()
+end
 
-    for _, obj in ipairs(self.scene.items) do
-        if (obj.draw) then
-            obj:draw()
-        end
-    end
+function mt:draw() self:baseDraw() end
+
+
+function mt:exit()
 end
 
 

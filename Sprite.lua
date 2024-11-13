@@ -31,47 +31,52 @@ function mt:draw()
     self.image,
     math.floor(self.x+0.5),
     math.floor(self.y+0.5),
-    self.imageRotation,
-    self.imageScaleX,
-    self.imageScaleY,
-    math.floor(self.imageOriginX+0.5),
-    math.floor(self.imageOriginY+0.5))
+    self.rotation,
+    self.scaleX,
+    self.scaleY,
+    math.floor(self.originX+0.5),
+    math.floor(self.originY+0.5))
     love.graphics.setColor(1, 1, 1, 1)
 end
 
 
-function mt:setBounds(bounds, index)
-	bounds.oX = bounds:getX()
-	bounds.oY = bounds:getY()
-
-	bounds:setX(bounds.oX + self.x - self.imageOriginX)
-	bounds:setY(bounds.oY + self.y - self.imageOriginY)
-	
-	self.bounds[index or 1] = bounds
+function mt:getRect()
+	return Rectangle.new(self.x - self.originX, self.y - self.originY, self.width, self.height)
 end
 
 
-function mt:getBounds(index)
+function mt:setBounds(bounds, imageIndex)
+	bounds.oX = bounds:getX()
+	bounds.oY = bounds:getY()
+
+	bounds:setX(bounds.oX + self.x - self.originX)
+	bounds:setY(bounds.oY + self.y - self.originY)
+	
+	self.bounds[imageIndex or 1] = bounds
+end
+
+
+function mt:getBounds(imageIndex)
 	local bounds
 	
-	if (index == nil) then
+	if (imageIndex == nil) then
 		bounds = self.bounds[1]
 	else
-		bounds = self.bounds[index] ~= nil and self.bounds[index] or self.bounds[1]
+		bounds = self.bounds[imageIndex] ~= nil and self.bounds[imageIndex] or self.bounds[1]
 	end
 
-	bounds:setX(bounds.oX + self.x - self.imageOriginX)
-	bounds:setY(bounds.oY + self.y - self.imageOriginY)
+	bounds:setX(bounds.oX + self.x - self.originX)
+	bounds:setY(bounds.oY + self.y - self.originY)
 	
 	return bounds
 end
 
 
-function mt:addBounds(bounds, index)
-	bounds:setX(bounds:getX() + self.x - self.imageOriginX)
-	bounds:setY(bounds:getY() + self.y - self.imageOriginY)
+function mt:addBounds(bounds, imageIndex)
+	bounds:setX(bounds:getX() + self.x - self.originX)
+	bounds:setY(bounds:getY() + self.y - self.originY)
 
-	self:getBounds(index or nil):add(bounds)
+	self:getBounds(imageIndex or nil):add(bounds)
 end
 
 
@@ -112,38 +117,40 @@ function mt:createGrid(imageNumber, imagesPerRow, width, height, horizontalCellO
         self.grid[self.imageIndex],
         math.floor(self.x),
         math.floor(self.y),
-        self.imageRotation,
-        self.imageScaleX,
-        self.imageScaleY,
-        math.floor(self.imageOriginX+0.5),
-        math.floor(self.imageOriginY+0.5))
+        self.rotation,
+        self.scaleX,
+        self.scaleY,
+        math.floor(self.originX+0.5),
+        math.floor(self.originY+0.5))
         love.graphics.setColor(1, 1, 1, 1)
     end
 end
 
 
 return {
-    new = function(image, x, y, imageRotation, imageScaleX, imageScaleY, imageOriginX, imageOriginY)
+    new = function(image, x, y, rotation, scaleX, scaleY, originX, originY)
         local nt = {
 			id = 0,
+			class = "sprite",
 			depth = 0,
 			image = type(image) ~= "string" and image or love.graphics.newImage(image),
 			x = x or 0,
 			y = y or 0,
-			imageRotation = imageRotation or 0,
-			imageScaleX   = imageScaleX   or 1,
-			imageScaleY   = imageScaleY   or 1,
-			imageOriginX  = imageOriginX  or 0,
-			imageOriginY  = imageOriginY  or 0,
+			rotation = rotation or 0,
+			scaleX   = scaleX   or 1,
+			scaleY   = scaleY   or 1,
+			originX  = originX  or 0,
+			originY  = originY  or 0,
 			grid = {},
 			imageIndex  = 1,
+			imageTime = 0,
 			imageSpeed = 0,
 			imageNumber = 0,
 			imageBlend = { 1, 1, 1 },
+			imageAlpha = 1,
 			width,
 			height,
 			bounds = {},
-			imageTime = 0
         }
         setmetatable(nt, mt)
         nt.width, nt.height = nt.image:getDimensions()
