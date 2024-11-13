@@ -2,9 +2,14 @@ local mt = {}
 mt.__index = mt
 
 
-function mt:add(object)
-    table.insert(self.items, object)
-    self.onAdd(object)
+function mt:get(itemIndex)
+	return self.items[itemIndex]
+end
+
+
+function mt:add(item)
+	table.insert(self.items, item)
+	self.indexCount = self.indexCount + 1
 end
 
 
@@ -12,24 +17,24 @@ function mt:remove(index)
     table.remove(self.items, index)
 end
 
-function mt:sort(func)
-	table.sort(self.items, func)
-end
 
-
-function mt:find(v, a)
+function mt:find(parameter, value, breakOnOne)
     local list = {}
 	
-	if (a == nil) then
-		for _, item in ipairs(self.items) do
-			if (item[v]) then
+	if (value == nil) then
+		for _, item in pairs(self.items) do
+			if (item[parameter]) then
 				table.insert(list, item)
+				
+				if (breakOnOne) then break end
 			end
 		end
 	else
-		for _, item in ipairs(self.items) do
-			if (item[v] == a) then
+		for _, item in pairs(self.items) do
+			if (item[parameter] == value) then
 				table.insert(list, item)
+				
+				if (breakOnOne) then break end
 			end
 		end
 	end
@@ -42,8 +47,8 @@ return
 {
     new = function()
         local nt = {
-			items = {},
-			onAdd = function() return nil end,
+			indexCount = 0,
+			items = {}
         }
         setmetatable(nt, mt)
 

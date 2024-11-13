@@ -40,6 +40,11 @@ function mt:draw()
 end
 
 
+function mt:getRect()
+	return Rectangle.new(self.x - self.imageOriginX, self.y - self.imageOriginY, self.width, self.height)
+end
+
+
 function mt:setBounds(bounds, index)
 	bounds.oX = bounds:getX()
 	bounds.oY = bounds:getY()
@@ -126,6 +131,7 @@ return {
     new = function(image, x, y, imageRotation, imageScaleX, imageScaleY, imageOriginX, imageOriginY)
         local nt = {
 			id = 0,
+			class = "sprite",
 			depth = 0,
 			image = type(image) ~= "string" and image or love.graphics.newImage(image),
 			x = x or 0,

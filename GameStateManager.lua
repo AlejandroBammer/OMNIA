@@ -2,11 +2,15 @@ local GameStateManager = {}
 
 function GameStateManager.setCurrent(stateName, args)
     GameStateManager.nextCurrent = require("game states/" .. stateName .. "State").new(args)
-    GameStateManager.nextCurrent.name = "stateName"
+    GameStateManager.nextCurrent.name = stateName
 
     if not GameStateManager.current then
         GameStateManager.update()
+    else
+		GameStateManager.current:exit()
     end
+    
+    GameStateManager.nextCurrent:enter()
 end
 
 function GameStateManager.getCurrent()

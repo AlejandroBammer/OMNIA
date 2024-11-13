@@ -17,6 +17,11 @@ function mt.new(x, y, width, height)
 end
 
 
+function mt:toBounds()
+	return require("Bounds").new(self.x, self.y, self.width, self.height)
+end
+
+
 function mt:intersects(other)
     return  self:getRight()  > other:getLeft()  and
             self:getLeft()   < other:getRight() and

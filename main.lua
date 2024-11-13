@@ -21,12 +21,14 @@ function love.load()
 
     -- Inputs.
     local controlsFileExists = love.filesystem.getInfo("controls.txt")
-
+    
     if not (controlsFileExists) then
         Input.initialize()
     else
         Input.loadControls()
     end
+    
+    Input.load()
     
 
     -- Primer estado.
@@ -56,17 +58,17 @@ function love.keypressed(key, scancode, isrepeat)
     -- Reinicia el juego.
     if (key == "f1") then
         -- love.event.quit("restart")
-        Global.resetData()
+        -- Global.resetData()
         GameStateManager.setCurrent("Menu")
     end
 
     -- Salta al menú.
     if (key == "f2") then
-        Global.resetData()
-        GameStateManager.setCurrent("Menu")
+        -- Global.resetData()
+        GameStateManager.setCurrent("Test")
     end
 
-    -- Perzonalizado.
+    -- Gameplay.
     if (key == "f3") then
         
     end
